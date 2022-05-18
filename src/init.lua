@@ -37,7 +37,7 @@ end
 function _Enum:GetEnumItems()
 	local list = {}
 	for k, v in pairs(self._enumItems) do
-		list[k] = v
+		table.insert(list, v)
 	end
 	return list
 end
@@ -47,6 +47,8 @@ function _Enum:__index(key)
 	local enum = rawget(self, "_enumItems")[key]
 	if enum then
 		return enum
+	elseif _Enum[key] then
+		return _Enum[key]
 	else
 		error("No EnumItem found at "..tostring(key))
 	end
@@ -72,8 +74,8 @@ Enums.__type = "Enums"
 
 function Enums:GetEnums()
 	local list = {}
-	for k, v in pairs(self._enums) do
-		list[k] = v
+	for k, v in pairs(self._enumItems) do
+		table.insert(list, v)
 	end
 	return list
 end
@@ -91,8 +93,17 @@ function Enums:__index(key)
 	local enum = rawget(self, "_enums")[key]
 	if enum then
 		return enum
+	elseif Enums[key] then
+		return Enums[key]
 	else
-		error("No enum found at "..tostring(key))
+		local isRealEnum = pcall(function()
+			return Enum[key]
+		end)
+		if isRealEnum then
+			return Enum[key]
+		else
+			error("No enum found at "..tostring(key))
+		end
 	end
 end
 
