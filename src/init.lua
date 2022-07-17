@@ -60,7 +60,7 @@ function newEnum(name, itemList)
 	local self = {}
 	self._enumItems = {}
 	self.Name = name
-	self._enumItems[0] = newEnumItem("None", 0, self)
+	self._enumItems.None = newEnumItem("None", 0, self)
 	for v, k in ipairs(itemList) do
 		self._enumItems[k] = newEnumItem(k, v, self)
 	end
